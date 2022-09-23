@@ -101,7 +101,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
         )
 
     pl = pv.Plotter(off_screen=True)
-    pl.set_background("gray")
+    pl.set_background("white")
     pl.add_mesh(
         cfd,
         cmap="jet",
