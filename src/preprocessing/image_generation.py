@@ -1,4 +1,5 @@
 import os
+import sys
 import random
 import numpy as np
 import pyvista as pv
@@ -54,7 +55,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
             IMAGE_DIR,
             TRAIN_DIR,
             INPUT_DIR,
-            filename[:-4]
+            filename
         )
     else:
         image_path = os.path.join(
@@ -62,7 +63,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
             IMAGE_DIR,
             TEST_DIR,
             INPUT_DIR,
-            filename[:-4]
+            filename
         )
 
     pl = pv.Plotter(off_screen=True)
@@ -89,7 +90,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
             IMAGE_DIR,
             TRAIN_DIR,
             TARGET_DIR,
-            filename[:-4]
+            filename
         )
     else:
         image_path = os.path.join(
@@ -97,7 +98,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
             IMAGE_DIR,
             TEST_DIR,
             TARGET_DIR,
-            filename[:-4]
+            filename
         )
 
     pl = pv.Plotter(off_screen=True)
