@@ -16,6 +16,7 @@ IMAGE_DIR = "Images/"
 INPUT_DIR = "Input/"
 CURVATURE_DIR = "Curvature/"
 TARGET_DIR = "Target/"
+ROTATION = 30
 TRAIN_PERCENTAGE = 0.8
 
 geometries = os.listdir(os.path.join(DATASET_PATH, INPUT_DIR))
@@ -44,7 +45,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
         filename + ".vtk"
     )
 
-    # --------------------- GEOMETRY -----------------------
+    # ======================== GEOMETRY ========================
 
     geometry = pv.read(geometry_path)
     image_path = None
@@ -66,6 +67,43 @@ for filename in tqdm(geometries, desc="Processing ... "):
             filename
         )
 
+    # ------------------- AUGMENTATION ----------------------------
+
+    if filename in train_geometries:
+        pl = pv.Plotter(off_screen=True)
+        pl.set_background("white")
+        pl.add_mesh(
+            geometry,
+            show_scalar_bar=False,
+            smooth_shading=True
+        )
+
+        for i in range(360 // ROTATION):
+            geometry.rotate_x(ROTATION, inplace=True)
+            pl.show(auto_close=False)
+            image = Image.fromarray(pl.image[:, 128:-128, :])
+            image.save(image_path + "_x_{:03d}.jpg".format(i))
+
+        pl.close()
+
+        pl = pv.Plotter(off_screen=True)
+        pl.set_background("white")
+        pl.add_mesh(
+            geometry,
+            show_scalar_bar=False,
+            smooth_shading=True
+        )
+
+        for i in range(360 // ROTATION):
+            geometry.rotate_y(ROTATION, inplace=True)
+            pl.show(auto_close=False)
+            image = Image.fromarray(pl.image[:, 128:-128, :])
+            image.save(image_path + "_y_{:03d}.jpg".format(i))
+
+        pl.close()
+
+    # --------------------- ORIGINAL -------------------------
+
     pl = pv.Plotter(off_screen=True)
     pl.set_background("white")
     pl.add_mesh(
@@ -74,13 +112,15 @@ for filename in tqdm(geometries, desc="Processing ... "):
         smooth_shading=True
     )
 
-    for i in range(36):
-        geometry.rotate_z(10, inplace=True)
+    for i in range(360 // (ROTATION // 3)):
+        geometry.rotate_z(ROTATION // 3, inplace=True)
         pl.show(auto_close=False)
         image = Image.fromarray(pl.image[:, 128:-128, :])
-        image.save(image_path + "_{:03d}.jpg".format(i))
+        image.save(image_path + "_z_{:03d}.jpg".format(i))
 
     pl.close()
+
+    # ========================= CFD =========================
 
     cfd = pv.read(cfd_path)
 
@@ -101,6 +141,45 @@ for filename in tqdm(geometries, desc="Processing ... "):
             filename
         )
 
+    # ------------------- AUGMENTATION ------------------------
+
+    if filename in train_geometries:
+        pl = pv.Plotter(off_screen=True)
+        pl.set_background("white")
+        pl.add_mesh(
+            cfd,
+            cmap="jet",
+            show_scalar_bar=False,
+            smooth_shading=True
+        )
+
+        for i in range(360 // ROTATION):
+            cfd.rotate_x(ROTATION, inplace=True)
+            pl.show(auto_close=False)
+            image = Image.fromarray(pl.image[:, 128:-128, :])
+            image.save(image_path + "_x_{:03d}.jpg".format(i))
+
+        pl.close()
+
+        pl = pv.Plotter(off_screen=True)
+        pl.set_background("white")
+        pl.add_mesh(
+            cfd,
+            cmap="jet",
+            show_scalar_bar=False,
+            smooth_shading=True
+        )
+
+        for i in range(360 // ROTATION):
+            cfd.rotate_y(ROTATION, inplace=True)
+            pl.show(auto_close=False)
+            image = Image.fromarray(pl.image[:, 128:-128, :])
+            image.save(image_path + "_y_{:03d}.jpg".format(i))
+
+        pl.close()
+
+    # -------------------- ORIGINAL ---------------------------
+
     pl = pv.Plotter(off_screen=True)
     pl.set_background("white")
     pl.add_mesh(
@@ -110,11 +189,11 @@ for filename in tqdm(geometries, desc="Processing ... "):
         smooth_shading=True
     )
 
-    for i in range(36):
-        cfd.rotate_z(10, inplace=True)
+    for i in range(360 // (ROTATION // 3)):
+        cfd.rotate_z(ROTATION // 3, inplace=True)
         pl.show(auto_close=False)
         image = Image.fromarray(pl.image[:, 128:-128, :])
-        image.save(image_path + "_{:03d}.jpg".format(i))
+        image.save(image_path + "_z_{:03d}.jpg".format(i))
 
     pl.close()
 
