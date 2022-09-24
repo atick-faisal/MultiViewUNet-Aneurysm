@@ -7,17 +7,17 @@ from tqdm import tqdm
 
 DATASET_PATH = "../../data/dataset/"
 VIDEO_DIR = "Videos/"
-GEOMETRY_DIR = "Geometry/"
+GEOMETRY_DIR = "Input/"
 CURVATURE_DIR = "Curvature/"
-CFD_DIR = "Geometry_CFD_Aneurysm/"
+CFD_DIR = "Target/"
 
-geometries = os.listdir(os.path.join(DATASET_PATH, GEOMETRY_DIR))
+geometries = os.listdir(os.path.join(DATASET_PATH, GEOMETRY_DIR))[20:]
 cfd_results = os.listdir(os.path.join(DATASET_PATH, CFD_DIR))
 
-for geometry in tqdm(cfd_results, desc="Processing ... "):
+for geometry in tqdm(geometries, desc="Processing ... "):
     geometry_path = os.path.join(
         DATASET_PATH,
-        CFD_DIR,
+        GEOMETRY_DIR,
         geometry
     )
 
@@ -36,20 +36,26 @@ for geometry in tqdm(cfd_results, desc="Processing ... "):
     #     / (np.std(curvature))
 
     pl = pv.Plotter()
-    pl.open_movie(video_path)
+    pl.enable_anti_aliasing()
+    # pl.open_movie(video_path)
     pl.set_background("white")
     pl.add_mesh(
         mesh,
         # scalars=curvature,
-        cmap="jet",
+        # cmap="jet",
         # clim=[-1, 1],
-        show_scalar_bar=False
+        show_scalar_bar=False,
+        split_sharp_edges=True, 
+        pbr=True, 
+        metallic=1.0, 
+        roughness=0.5
     )
 
-    pl.write_frame()
+    # pl.write_frame()
     for i in range(360):
         mesh.rotate_z(1, inplace=True)
-        pl.write_frame()
+        pl.show()
+        # pl.write_frame()
 
     pl.close()
 
