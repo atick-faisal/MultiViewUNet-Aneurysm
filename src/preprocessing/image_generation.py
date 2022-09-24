@@ -150,7 +150,8 @@ for filename in tqdm(geometries, desc="Processing ... "):
             cfd,
             cmap="jet",
             show_scalar_bar=False,
-            smooth_shading=True
+            smooth_shading=True,
+            clim=[0, 5]
         )
 
         for i in range(360 // ROTATION):
@@ -167,7 +168,8 @@ for filename in tqdm(geometries, desc="Processing ... "):
             cfd,
             cmap="jet",
             show_scalar_bar=False,
-            smooth_shading=True
+            smooth_shading=True,
+            clim=[0, 5]
         )
 
         for i in range(360 // ROTATION):
@@ -186,7 +188,8 @@ for filename in tqdm(geometries, desc="Processing ... "):
         cfd,
         cmap="jet",
         show_scalar_bar=False,
-        smooth_shading=True
+        smooth_shading=True,
+        clim=[0, 5]
     )
 
     for i in range(360 // (ROTATION // 3)):
