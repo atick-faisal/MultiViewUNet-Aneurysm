@@ -71,11 +71,16 @@ for filename in tqdm(geometries, desc="Processing ... "):
 
     if filename in train_geometries:
         pl = pv.Plotter(off_screen=True)
+        pl.enable_anti_aliasing()
         pl.set_background("white")
         pl.add_mesh(
             geometry,
             show_scalar_bar=False,
-            smooth_shading=True
+            smooth_shading=True,
+            # split_sharp_edges=True,
+            pbr=True,
+            metallic=1.0,
+            roughness=0.5
         )
 
         for i in range(360 // ROTATION):
@@ -87,11 +92,16 @@ for filename in tqdm(geometries, desc="Processing ... "):
         pl.close()
 
         pl = pv.Plotter(off_screen=True)
+        pl.enable_anti_aliasing()
         pl.set_background("white")
         pl.add_mesh(
             geometry,
             show_scalar_bar=False,
-            smooth_shading=True
+            smooth_shading=True,
+            # split_sharp_edges=True,
+            pbr=True,
+            metallic=1.0,
+            roughness=0.5
         )
 
         for i in range(360 // ROTATION):
@@ -105,11 +115,16 @@ for filename in tqdm(geometries, desc="Processing ... "):
     # --------------------- ORIGINAL -------------------------
 
     pl = pv.Plotter(off_screen=True)
+    pl.enable_anti_aliasing()
     pl.set_background("white")
     pl.add_mesh(
         geometry,
         show_scalar_bar=False,
-        smooth_shading=True
+        smooth_shading=True,
+        # split_sharp_edges=True,
+        pbr=True,
+        metallic=1.0,
+        roughness=0.5
     )
 
     for i in range(360 // (ROTATION // 3)):
@@ -145,13 +160,14 @@ for filename in tqdm(geometries, desc="Processing ... "):
 
     if filename in train_geometries:
         pl = pv.Plotter(off_screen=True)
+        pl.enable_anti_aliasing()
         pl.set_background("white")
         pl.add_mesh(
             cfd,
             cmap="jet",
             show_scalar_bar=False,
             smooth_shading=True,
-            clim=[0, 5]
+            # clim=[0, 5]
         )
 
         for i in range(360 // ROTATION):
@@ -163,13 +179,14 @@ for filename in tqdm(geometries, desc="Processing ... "):
         pl.close()
 
         pl = pv.Plotter(off_screen=True)
+        pl.enable_anti_aliasing()
         pl.set_background("white")
         pl.add_mesh(
             cfd,
             cmap="jet",
             show_scalar_bar=False,
             smooth_shading=True,
-            clim=[0, 5]
+            # clim=[0, 5]
         )
 
         for i in range(360 // ROTATION):
@@ -183,13 +200,14 @@ for filename in tqdm(geometries, desc="Processing ... "):
     # -------------------- ORIGINAL ---------------------------
 
     pl = pv.Plotter(off_screen=True)
+    pl.enable_anti_aliasing()
     pl.set_background("white")
     pl.add_mesh(
         cfd,
         cmap="jet",
         show_scalar_bar=False,
         smooth_shading=True,
-        clim=[0, 5]
+        # clim=[0, 5]
     )
 
     for i in range(360 // (ROTATION // 3)):
@@ -201,8 +219,6 @@ for filename in tqdm(geometries, desc="Processing ... "):
     pl.close()
 
     # break
-
-
 
 
 # -------------------------- v1 -------------------------------
