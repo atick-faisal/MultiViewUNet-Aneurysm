@@ -24,7 +24,7 @@ for geometry in tqdm(geometries, desc="Processing ... "):
     video_path = os.path.join(
         DATASET_PATH,
         VIDEO_DIR,
-        "CFD",
+        "InputMetalic",
         geometry[:-4] + ".avi"
     )
 
@@ -37,26 +37,23 @@ for geometry in tqdm(geometries, desc="Processing ... "):
 
     pl = pv.Plotter()
     pl.enable_anti_aliasing()
-    # pl.open_movie(video_path)
+    pl.open_movie(video_path)
     pl.set_background("white")
     pl.add_mesh(
         mesh,
-        # scalars=curvature,
-        # cmap="jet",
-        # clim=[-1, 1],
         show_scalar_bar=False,
-        split_sharp_edges=True, 
-        pbr=True, 
-        metallic=1.0, 
+        smooth_shading=True,
+        # split_sharp_edges=True,
+        pbr=True,
+        metallic=1.0,
         roughness=0.5
     )
 
-    # pl.write_frame()
+    pl.write_frame()
     for i in range(360):
         mesh.rotate_z(1, inplace=True)
-        pl.show()
-        # pl.write_frame()
+        pl.write_frame()
 
     pl.close()
 
-    # break
+    break
