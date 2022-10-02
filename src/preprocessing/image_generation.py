@@ -2,6 +2,7 @@ import os
 import sys
 import random
 import numpy as np
+import pandas as pd
 import pyvista as pv
 
 from tqdm import tqdm
@@ -16,6 +17,7 @@ IMAGE_DIR = "Images/"
 INPUT_DIR = "Input/"
 CURVATURE_DIR = "Curvature/"
 TARGET_DIR = "Target/"
+TAWSS_DIR = "TAWSS/"
 ROTATION = 30
 TRAIN_PERCENTAGE = 0.8
 
@@ -39,10 +41,16 @@ for filename in tqdm(geometries, desc="Processing ... "):
         filename + ".stl"
     )
 
-    cfd_path = os.path.join(
+    # cfd_path = os.path.join(
+    #     DATASET_PATH,
+    #     TARGET_DIR,
+    #     filename + ".vtk"
+    # )
+
+    tawss_path = os.path.join(
         DATASET_PATH,
-        TARGET_DIR,
-        filename + ".vtk"
+        TAWSS_DIR,
+        filename + ".csv"
     )
 
     # ======================== GEOMETRY ========================
@@ -137,7 +145,10 @@ for filename in tqdm(geometries, desc="Processing ... "):
 
     # ========================= CFD =========================
 
-    cfd = pv.read(cfd_path)
+    # cfd = pv.read(cfd_path)
+    geometry = pv.read(geometry_path)
+    tawss = pd.read_csv(tawss_path).to_numpy()
+    tawss = np.append(tawss, [0])
 
     if filename in train_geometries:
         image_path = os.path.join(
@@ -163,15 +174,17 @@ for filename in tqdm(geometries, desc="Processing ... "):
         pl.enable_anti_aliasing()
         pl.set_background("white")
         pl.add_mesh(
-            cfd,
+            # cfd,
+            geometry,
             cmap="jet",
             show_scalar_bar=False,
             smooth_shading=True,
-            # clim=[0, 5]
+            scalars=tawss,
+            clim=[0, 5]
         )
 
         for i in range(360 // ROTATION):
-            cfd.rotate_x(ROTATION, inplace=True)
+            geometry.rotate_x(ROTATION, inplace=True)
             pl.show(auto_close=False)
             image = Image.fromarray(pl.image[:, 128:-128, :])
             image.save(image_path + "_x_{:03d}.jpg".format(i))
@@ -182,15 +195,16 @@ for filename in tqdm(geometries, desc="Processing ... "):
         pl.enable_anti_aliasing()
         pl.set_background("white")
         pl.add_mesh(
-            cfd,
+            geometry,
             cmap="jet",
             show_scalar_bar=False,
             smooth_shading=True,
-            # clim=[0, 5]
+            scalars=tawss,
+            clim=[0, 5]
         )
 
         for i in range(360 // ROTATION):
-            cfd.rotate_y(ROTATION, inplace=True)
+            geometry.rotate_y(ROTATION, inplace=True)
             pl.show(auto_close=False)
             image = Image.fromarray(pl.image[:, 128:-128, :])
             image.save(image_path + "_y_{:03d}.jpg".format(i))
@@ -203,15 +217,16 @@ for filename in tqdm(geometries, desc="Processing ... "):
     pl.enable_anti_aliasing()
     pl.set_background("white")
     pl.add_mesh(
-        cfd,
+        geometry,
         cmap="jet",
         show_scalar_bar=False,
         smooth_shading=True,
-        # clim=[0, 5]
+        scalars=tawss,
+        clim=[0, 5]
     )
 
     for i in range(360 // (ROTATION // 3)):
-        cfd.rotate_z(ROTATION // 3, inplace=True)
+        geometry.rotate_z(ROTATION // 3, inplace=True)
         pl.show(auto_close=False)
         image = Image.fromarray(pl.image[:, 128:-128, :])
         image.save(image_path + "_z_{:03d}.jpg".format(i))
