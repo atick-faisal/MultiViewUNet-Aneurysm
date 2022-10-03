@@ -7,6 +7,7 @@ import pyvista as pv
 
 from tqdm import tqdm
 from PIL import Image
+from matplotlib import cm
 
 random.seed(42)
 
@@ -56,6 +57,14 @@ for filename in tqdm(geometries, desc="Processing ... "):
     # ======================== GEOMETRY ========================
 
     geometry = pv.read(geometry_path)
+    curvature = geometry.curvature(curv_type="mean")
+    # curvature = (curvature - np.mean(curvature)) \
+    #     / (np.std(curvature))
+    geometry.point_data["Curvature"] = curvature
+
+    # print(np.min(curvature))
+    # print(np.max(curvature))
+
     image_path = None
 
     if filename in train_geometries:
@@ -85,10 +94,12 @@ for filename in tqdm(geometries, desc="Processing ... "):
             geometry,
             show_scalar_bar=False,
             smooth_shading=True,
+            cmap=cm.get_cmap("jet", 10),
             # split_sharp_edges=True,
-            pbr=True,
-            metallic=1.0,
-            roughness=0.5
+            # pbr=True,
+            # metallic=1.0,
+            # roughness=0.5,
+            clim=[0, 300]
         )
 
         for i in range(360 // ROTATION):
@@ -106,10 +117,12 @@ for filename in tqdm(geometries, desc="Processing ... "):
             geometry,
             show_scalar_bar=False,
             smooth_shading=True,
+            cmap=cm.get_cmap("jet", 10),
             # split_sharp_edges=True,
-            pbr=True,
-            metallic=1.0,
-            roughness=0.5
+            # pbr=True,
+            # metallic=1.0,
+            # roughness=0.5,
+            clim=[0, 300]
         )
 
         for i in range(360 // ROTATION):
@@ -129,10 +142,12 @@ for filename in tqdm(geometries, desc="Processing ... "):
         geometry,
         show_scalar_bar=False,
         smooth_shading=True,
+        cmap=cm.get_cmap("jet", 10),
         # split_sharp_edges=True,
-        pbr=True,
-        metallic=1.0,
-        roughness=0.5
+        # pbr=True,
+        # metallic=1.0,
+        # roughness=0.5,
+        clim=[0, 300]
     )
 
     for i in range(360 // (ROTATION // 3)):
@@ -147,8 +162,9 @@ for filename in tqdm(geometries, desc="Processing ... "):
 
     # cfd = pv.read(cfd_path)
     geometry = pv.read(geometry_path)
-    tawss = pd.read_csv(tawss_path).to_numpy()
-    tawss = np.append(tawss, [0])
+    tawss = pd.read_csv(tawss_path, header=None).values
+    # tawss = (tawss - np.mean(tawss)) \
+    #     / (np.std(tawss))
 
     if filename in train_geometries:
         image_path = os.path.join(
@@ -176,7 +192,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
         pl.add_mesh(
             # cfd,
             geometry,
-            cmap="jet",
+            cmap=cm.get_cmap("jet", 10),
             show_scalar_bar=False,
             smooth_shading=True,
             scalars=tawss,
@@ -196,7 +212,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
         pl.set_background("white")
         pl.add_mesh(
             geometry,
-            cmap="jet",
+            cmap=cm.get_cmap("jet", 10),
             show_scalar_bar=False,
             smooth_shading=True,
             scalars=tawss,
@@ -218,7 +234,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
     pl.set_background("white")
     pl.add_mesh(
         geometry,
-        cmap="jet",
+        cmap=cm.get_cmap("jet", 10),
         show_scalar_bar=False,
         smooth_shading=True,
         scalars=tawss,
