@@ -9,7 +9,25 @@ from tqdm import tqdm
 from PIL import Image
 from matplotlib import cm
 
+from matplotlib.colors import ListedColormap
+
 random.seed(42)
+
+cmap = ListedColormap(
+    np.array([
+        [0, 51, 251, 255],
+        [5, 164, 246, 255],
+        [2, 244, 255, 255],
+        [1, 245, 251, 255],
+        [0, 253, 198, 255],
+        [4, 250, 122, 255],
+        [77, 253, 1, 255],
+        [177, 253, 3, 255],
+        [247, 254, 1, 255],
+        [255, 176, 0, 255],
+        [250, 68, 3, 255]
+    ], dtype=np.uint8) / 255.0
+)
 
 DATASET_PATH = "../../data/dataset/"
 TRAIN_DIR = "Train/"
@@ -160,9 +178,9 @@ for filename in tqdm(geometries, desc="Processing ... "):
 
     # ========================= CFD =========================
 
-    geometry = pv.read(cfd_path)
-    # geometry = pv.read(geometry_path)
-    # tawss = pd.read_csv(tawss_path, header=None).values
+    # geometry = pv.read(cfd_path)
+    geometry = pv.read(geometry_path)
+    tawss = pd.read_csv(tawss_path, header=None).values
     # tawss = (tawss - np.mean(tawss)) \
     #     / (np.std(tawss))
 
@@ -185,70 +203,76 @@ for filename in tqdm(geometries, desc="Processing ... "):
 
     # ------------------- AUGMENTATION ------------------------
 
-    if filename in train_geometries:
-        pl = pv.Plotter(off_screen=True)
-        # pl.enable_anti_aliasing()
-        pl.set_background("white")
-        pl.disable_shadows()
-        pl.add_mesh(
-            # cfd,
-            geometry,
-            cmap=cm.get_cmap("rainbow", 10),
-            show_scalar_bar=False,
-            # smooth_shading=True,
-            # scalars=tawss,
-            clim=[0, 2]
-        )
+    # if filename in train_geometries:
+    #     pl = pv.Plotter(off_screen=True)
+    #     # pl.enable_anti_aliasing()
+    #     pl.set_background("white")
+    #     pl.disable_shadows()
+    #     pl.add_mesh(
+    #         # cfd,
+    #         geometry,
+    #         cmap=cm.get_cmap("rainbow", 10),
+    #         show_scalar_bar=False,
+    #         # smooth_shading=True,
+    #         # scalars=tawss,
+    #         clim=[0, 2]
+    #     )
 
-        for i in range(360 // ROTATION):
-            geometry.rotate_x(ROTATION, inplace=True)
-            pl.show(auto_close=False)
-            image = Image.fromarray(pl.image[:, 128:-128, :])
-            image.save(image_path + "_x_{:03d}.jpg".format(i))
+    #     for i in range(360 // ROTATION):
+    #         geometry.rotate_x(ROTATION, inplace=True)
+    #         pl.show(auto_close=False)
+    #         image = Image.fromarray(pl.image[:, 128:-128, :])
+    #         image.save(image_path + "_x_{:03d}.jpg".format(i))
 
-        pl.close()
+    #     pl.close()
 
-        pl = pv.Plotter(off_screen=True)
-        # pl.enable_anti_aliasing()
-        pl.set_background("white")
-        pl.disable_shadows()
-        pl.add_mesh(
-            geometry,
-            cmap=cm.get_cmap("rainbow", 10),
-            show_scalar_bar=False,
-            # smooth_shading=True,
-            # scalars=tawss,
-            clim=[0, 2]
-        )
+    #     pl = pv.Plotter(off_screen=True)
+    #     # pl.enable_anti_aliasing()
+    #     pl.set_background("white")
+    #     pl.disable_shadows()
+    #     pl.add_mesh(
+    #         geometry,
+    #         cmap=cm.get_cmap("rainbow", 10),
+    #         show_scalar_bar=False,
+    #         # smooth_shading=True,
+    #         # scalars=tawss,
+    #         clim=[0, 2]
+    #     )
 
-        for i in range(360 // ROTATION):
-            geometry.rotate_y(ROTATION, inplace=True)
-            pl.show(auto_close=False)
-            image = Image.fromarray(pl.image[:, 128:-128, :])
-            image.save(image_path + "_y_{:03d}.jpg".format(i))
+    #     for i in range(360 // ROTATION):
+    #         geometry.rotate_y(ROTATION, inplace=True)
+    #         pl.show(auto_close=False)
+    #         image = Image.fromarray(pl.image[:, 128:-128, :])
+    #         image.save(image_path + "_y_{:03d}.jpg".format(i))
 
-        pl.close()
+    #     pl.close()
 
     # -------------------- ORIGINAL ---------------------------
 
     pl = pv.Plotter(off_screen=True)
-    # pl.enable_anti_aliasing()
+    pl.enable_anti_aliasing()
     pl.set_background("white")
-    pl.disable_shadows()
+    # pl.disable_shadows()
     pl.add_mesh(
         geometry,
-        cmap=cm.get_cmap("rainbow", 10),
+        cmap=cmap,
         show_scalar_bar=False,
-        # smooth_shading=True,
-        # scalars=tawss,
-        clim=[0, 2]
+        n_colors=10,
+        ambient=0.5,
+        smooth_shading=True,
+        scalars=tawss,
+        lighting=True,
+        # metallic=0.0,
+        # pbr=True,
+        # roughness=0.1,
+        clim=[0, 5]
     )
 
     for i in range(360 // (ROTATION // 3)):
         geometry.rotate_z(ROTATION // 3, inplace=True)
         pl.show(auto_close=False)
         image = Image.fromarray(pl.image[:, 128:-128, :])
-        image.save(image_path + "_z_{:03d}.jpg".format(i))
+        image.save(image_path + "_z_{:03d}.png".format(i))
 
     pl.close()
 
