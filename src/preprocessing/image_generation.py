@@ -42,11 +42,11 @@ for filename in tqdm(geometries, desc="Processing ... "):
         filename + ".stl"
     )
 
-    # cfd_path = os.path.join(
-    #     DATASET_PATH,
-    #     TARGET_DIR,
-    #     filename + ".vtk"
-    # )
+    cfd_path = os.path.join(
+        DATASET_PATH,
+        TARGET_DIR,
+        filename + ".vtk"
+    )
 
     tawss_path = os.path.join(
         DATASET_PATH,
@@ -160,9 +160,9 @@ for filename in tqdm(geometries, desc="Processing ... "):
 
     # ========================= CFD =========================
 
-    # cfd = pv.read(cfd_path)
-    geometry = pv.read(geometry_path)
-    tawss = pd.read_csv(tawss_path, header=None).values
+    geometry = pv.read(cfd_path)
+    # geometry = pv.read(geometry_path)
+    # tawss = pd.read_csv(tawss_path, header=None).values
     # tawss = (tawss - np.mean(tawss)) \
     #     / (np.std(tawss))
 
@@ -195,8 +195,8 @@ for filename in tqdm(geometries, desc="Processing ... "):
             cmap=cm.get_cmap("jet", 10),
             show_scalar_bar=False,
             smooth_shading=True,
-            scalars=tawss,
-            clim=[0, 5]
+            # scalars=tawss,
+            clim=[0, 2]
         )
 
         for i in range(360 // ROTATION):
@@ -215,8 +215,8 @@ for filename in tqdm(geometries, desc="Processing ... "):
             cmap=cm.get_cmap("jet", 10),
             show_scalar_bar=False,
             smooth_shading=True,
-            scalars=tawss,
-            clim=[0, 5]
+            # scalars=tawss,
+            clim=[0, 2]
         )
 
         for i in range(360 // ROTATION):
@@ -237,8 +237,8 @@ for filename in tqdm(geometries, desc="Processing ... "):
         cmap=cm.get_cmap("jet", 10),
         show_scalar_bar=False,
         smooth_shading=True,
-        scalars=tawss,
-        clim=[0, 5]
+        # scalars=tawss,
+        clim=[0, 2]
     )
 
     for i in range(360 // (ROTATION // 3)):
