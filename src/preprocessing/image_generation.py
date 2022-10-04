@@ -187,14 +187,15 @@ for filename in tqdm(geometries, desc="Processing ... "):
 
     if filename in train_geometries:
         pl = pv.Plotter(off_screen=True)
-        pl.enable_anti_aliasing()
+        # pl.enable_anti_aliasing()
         pl.set_background("white")
+        pl.disable_shadows()
         pl.add_mesh(
             # cfd,
             geometry,
-            cmap=cm.get_cmap("jet", 10),
+            cmap=cm.get_cmap("rainbow", 10),
             show_scalar_bar=False,
-            smooth_shading=True,
+            # smooth_shading=True,
             # scalars=tawss,
             clim=[0, 2]
         )
@@ -208,13 +209,14 @@ for filename in tqdm(geometries, desc="Processing ... "):
         pl.close()
 
         pl = pv.Plotter(off_screen=True)
-        pl.enable_anti_aliasing()
+        # pl.enable_anti_aliasing()
         pl.set_background("white")
+        pl.disable_shadows()
         pl.add_mesh(
             geometry,
-            cmap=cm.get_cmap("jet", 10),
+            cmap=cm.get_cmap("rainbow", 10),
             show_scalar_bar=False,
-            smooth_shading=True,
+            # smooth_shading=True,
             # scalars=tawss,
             clim=[0, 2]
         )
@@ -230,13 +232,14 @@ for filename in tqdm(geometries, desc="Processing ... "):
     # -------------------- ORIGINAL ---------------------------
 
     pl = pv.Plotter(off_screen=True)
-    pl.enable_anti_aliasing()
+    # pl.enable_anti_aliasing()
     pl.set_background("white")
+    pl.disable_shadows()
     pl.add_mesh(
         geometry,
-        cmap=cm.get_cmap("jet", 10),
+        cmap=cm.get_cmap("rainbow", 10),
         show_scalar_bar=False,
-        smooth_shading=True,
+        # smooth_shading=True,
         # scalars=tawss,
         clim=[0, 2]
     )
@@ -249,7 +252,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
 
     pl.close()
 
-    # break
+    break
 
 
 # -------------------------- v1 -------------------------------
