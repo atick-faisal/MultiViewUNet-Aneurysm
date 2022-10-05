@@ -21,6 +21,7 @@ ROTATION = 30
 TRAIN_PERCENTAGE = 0.8
 CURVATURE_CLIM = [0, 300]
 TAWSS_CLIM = [0, 5]
+ECAP_CLIM = [0, 2]
 
 # --------------------- Train-Test Split  -----------------------------
 geometries = os.listdir(os.path.join(DATASET_PATH, INPUT_DIR))
@@ -39,6 +40,12 @@ for filename in track(geometries, description="Processing ... "):
         filename + ".stl"
     )
 
+    vtk_path = os.path.join(
+        DATASET_PATH,
+        TARGET_DIR,
+        filename + ".vtk"
+    )
+
     result_path = os.path.join(
         DATASET_PATH,
         TAWSS_DIR,
@@ -48,8 +55,8 @@ for filename in track(geometries, description="Processing ... "):
     # -------------------------- Input Geometry ----------------------------
 
     geometry = pv.read(geometry_path)
-    curvature = geometry.curvature(curv_type="mean")
-    geometry.point_data["curvature"] = curvature
+    # curvature = geometry.curvature(curv_type="mean")
+    # geometry.point_data["curvature"] = curvature
 
     image_path = None
 
@@ -78,14 +85,16 @@ for filename in track(geometries, description="Processing ... "):
             rotation_step=ROTATION,
             rotation_axis="x",
             clim=CURVATURE_CLIM,
-            save_path=image_path
+            save_path=image_path,
+            glossy_rendering=True
         )
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="y",
             clim=CURVATURE_CLIM,
-            save_path=image_path
+            save_path=image_path,
+            glossy_rendering=True
         )
 
     # --------------------- Original -----------------------
@@ -95,14 +104,15 @@ for filename in track(geometries, description="Processing ... "):
         rotation_step=ROTATION,
         rotation_axis="z",
         clim=CURVATURE_CLIM,
-        save_path=image_path
+        save_path=image_path,
+        glossy_rendering=True
     )
 
     # -------------------------- Target Geometry ----------------------------
 
-    geometry = pv.read(geometry_path)
-    result = pd.read_csv(result_path, header=None).values
-    geometry.point_data["cfd"] = result
+    geometry = pv.read(vtk_path)
+    # result = pd.read_csv(result_path, header=None).values
+    # geometry.point_data["cfd"] = result
 
     image_path = None
 
@@ -130,24 +140,24 @@ for filename in track(geometries, description="Processing ... "):
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="x",
-            clim=TAWSS_CLIM,
+            clim=ECAP_CLIM,
             save_path=image_path
         )
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="y",
-            clim=TAWSS_CLIM,
+            clim=ECAP_CLIM,
             save_path=image_path
         )
 
     # --------------------- Original -----------------------
-    
+
     generate_rotating_snapshots(
         geometry=geometry,
         rotation_step=ROTATION,
         rotation_axis="z",
-        clim=TAWSS_CLIM,
+        clim=ECAP_CLIM,
         save_path=image_path
     )
 

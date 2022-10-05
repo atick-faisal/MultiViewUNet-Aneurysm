@@ -27,20 +27,32 @@ def generate_rotating_snapshots(
     rotation_step: int,
     rotation_axis: str,
     clim: List[int],
-    save_path: str
+    save_path: str,
+    glossy_rendering: bool = False
 ):
     pl = pv.Plotter(off_screen=True)
     pl.enable_anti_aliasing()
     pl.set_background("white")
-    pl.add_mesh(
-        geometry,
-        cmap=CFD_CMAP,
-        show_scalar_bar=False,
-        ambient=0.3,
-        smooth_shading=True,
-        lighting=True,
-        clim=clim
-    )
+
+    if glossy_rendering:
+        pl.add_mesh(
+            geometry,
+            cmap=CFD_CMAP,
+            show_scalar_bar=False,
+            pbr=True,
+            metallic=0.5,
+            roughness=0.5
+        )
+    else:
+        pl.add_mesh(
+            geometry,
+            cmap=CFD_CMAP,
+            show_scalar_bar=False,
+            ambient=0.3,
+            smooth_shading=True,
+            lighting=True,
+            clim=clim
+        )
 
     for i in range(360 // rotation_step):
         if rotation_axis == "x":
