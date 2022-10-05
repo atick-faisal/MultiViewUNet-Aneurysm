@@ -75,6 +75,7 @@ for filename in tqdm(geometries, desc="Processing ... "):
     # ======================== GEOMETRY ========================
 
     geometry = pv.read(geometry_path)
+    print(type(geometry))
     curvature = geometry.curvature(curv_type="mean")
     # curvature = (curvature - np.mean(curvature)) \
     #     / (np.std(curvature))
