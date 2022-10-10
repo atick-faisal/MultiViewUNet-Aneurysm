@@ -26,6 +26,7 @@ ECAP_CLIM = [0, 2]
 # --------------------- Train-Test Split  -----------------------------
 geometries = os.listdir(os.path.join(DATASET_PATH, INPUT_DIR))
 geometries = [filename[:-4] for filename in geometries]
+# geometries = list(filter(lambda x: "PATIENT1_SYNTHETIC_10" in x, geometries))
 
 random.shuffle(geometries)
 train_size = int(len(geometries) * TRAIN_PERCENTAGE)
@@ -55,8 +56,8 @@ for filename in track(geometries, description="Processing ... "):
     # -------------------------- Input Geometry ----------------------------
 
     geometry = pv.read(geometry_path)
-    # curvature = geometry.curvature(curv_type="mean")
-    # geometry.point_data["curvature"] = curvature
+    curvature = geometry.curvature(curv_type="mean")
+    geometry.point_data["CURVATURE"] = curvature
 
     image_path = None
 
@@ -77,27 +78,27 @@ for filename in track(geometries, description="Processing ... "):
             filename
         )
 
-    # --------------------- Augmentation --------------------------
+    # # --------------------- Augmentation --------------------------
 
-    if filename in train_geometries:
-        generate_rotating_snapshots(
-            geometry=geometry,
-            rotation_step=ROTATION,
-            rotation_axis="x",
-            clim=CURVATURE_CLIM,
-            save_path=image_path,
-            glossy_rendering=True
-        )
-        generate_rotating_snapshots(
-            geometry=geometry,
-            rotation_step=ROTATION,
-            rotation_axis="y",
-            clim=CURVATURE_CLIM,
-            save_path=image_path,
-            glossy_rendering=True
-        )
+    # if filename in train_geometries:
+    #     generate_rotating_snapshots(
+    #         geometry=geometry,
+    #         rotation_step=ROTATION,
+    #         rotation_axis="x",
+    #         clim=CURVATURE_CLIM,
+    #         save_path=image_path,
+    #         glossy_rendering=True
+    #     )
+    #     generate_rotating_snapshots(
+    #         geometry=geometry,
+    #         rotation_step=ROTATION,
+    #         rotation_axis="y",
+    #         clim=CURVATURE_CLIM,
+    #         save_path=image_path,
+    #         glossy_rendering=True
+    #     )
 
-    # --------------------- Original -----------------------
+    # # --------------------- Original -----------------------
 
     generate_rotating_snapshots(
         geometry=geometry,
@@ -105,14 +106,15 @@ for filename in track(geometries, description="Processing ... "):
         rotation_axis="z",
         clim=CURVATURE_CLIM,
         save_path=image_path,
-        glossy_rendering=True
+        glossy_rendering=False
     )
 
     # -------------------------- Target Geometry ----------------------------
 
     geometry = pv.read(vtk_path)
-    # result = pd.read_csv(result_path, header=None).values
-    # geometry.point_data["cfd"] = result
+    result = pd.read_csv(result_path, header=None).values
+    result = geometry.active_scalars
+    geometry.point_data["TAWSS"] = result
 
     image_path = None
 
@@ -135,21 +137,21 @@ for filename in track(geometries, description="Processing ... "):
 
     # --------------------- Augmentation --------------------------
 
-    if filename in train_geometries:
-        generate_rotating_snapshots(
-            geometry=geometry,
-            rotation_step=ROTATION,
-            rotation_axis="x",
-            clim=ECAP_CLIM,
-            save_path=image_path
-        )
-        generate_rotating_snapshots(
-            geometry=geometry,
-            rotation_step=ROTATION,
-            rotation_axis="y",
-            clim=ECAP_CLIM,
-            save_path=image_path
-        )
+    # if filename in train_geometries:
+    #     generate_rotating_snapshots(
+    #         geometry=geometry,
+    #         rotation_step=ROTATION,
+    #         rotation_axis="x",
+    #         clim=TAWSS_CLIM,
+    #         save_path=image_path
+    #     )
+    #     generate_rotating_snapshots(
+    #         geometry=geometry,
+    #         rotation_step=ROTATION,
+    #         rotation_axis="y",
+    #         clim=TAWSS_CLIM,
+    #         save_path=image_path
+    #     )
 
     # --------------------- Original -----------------------
 
@@ -157,7 +159,7 @@ for filename in track(geometries, description="Processing ... "):
         geometry=geometry,
         rotation_step=ROTATION,
         rotation_axis="z",
-        clim=ECAP_CLIM,
+        clim=TAWSS_CLIM,
         save_path=image_path
     )
 
