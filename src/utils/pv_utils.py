@@ -40,24 +40,23 @@ def generate_rotating_snapshots(
             cmap=CFD_CMAP,
             show_scalar_bar=False,
             pbr=True,
-            metallic=0.0,
-            roughness=0.05
+            metallic=0.5,
+            roughness=0.5
         )
     else:
         pl.add_mesh(
             geometry,
             cmap=CFD_CMAP,
-            show_scalar_bar=True,
+            show_scalar_bar=False,
             ambient=0.3,
             smooth_shading=True,
             lighting=True,
             clim=clim,
-            scalar_bar_args=dict(height=0.2, vertical=False, color="#212121",
-                                 position_x=0.2, position_y=0.05)
-
+            # scalar_bar_args=dict(height=0.2, vertical=False, color="#212121",
+            #                      position_x=0.2, position_y=0.05)
         )
 
-    for i in range(1):
+    for i in range(360 // rotation_step):
         if rotation_axis == "x":
             geometry.rotate_x(rotation_step, inplace=True)
         elif rotation_axis == "y":
