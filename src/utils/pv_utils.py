@@ -1,3 +1,4 @@
+import gc
 import numpy as np
 import pyvista as pv
 from PIL import Image
@@ -69,5 +70,9 @@ def generate_rotating_snapshots(
         pl.show(auto_close=False)
         image = Image.fromarray(pl.image[:, 128:-128, :])
         image.save(save_path + "_{:s}_{:03d}.png".format(rotation_axis, i))
-
+    
     pl.close()
+    pl.deep_clean()
+
+    del geometry, pl
+    gc.collect()
