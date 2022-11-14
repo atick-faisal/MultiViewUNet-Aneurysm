@@ -3,6 +3,7 @@ import numpy as np
 import pyvista as pv
 from PIL import Image
 from typing import List
+from matplotlib.pyplot import cm
 from matplotlib.colors import ListedColormap
 from pyvista.core.pointset import PolyData
 
@@ -38,7 +39,7 @@ def generate_rotating_snapshots(
     if glossy_rendering:
         pl.add_mesh(
             geometry,
-            cmap=CFD_CMAP,
+            cmap=cm.jet,
             show_scalar_bar=False,
             pbr=True,
             metallic=0.5,
@@ -47,7 +48,7 @@ def generate_rotating_snapshots(
     else:
         pl.add_mesh(
             geometry,
-            cmap=CFD_CMAP,
+            cmap=cm.jet,
             show_scalar_bar=False,
             ambient=0.3,
             smooth_shading=True,

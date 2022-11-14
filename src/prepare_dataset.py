@@ -26,7 +26,7 @@ ECAP_CLIM = [0, 2]
 geometries = os.listdir(os.path.join(DATASET_PATH, INPUT_DIR))
 geometries = [filename[:-4] for filename in geometries]
 
-geometries = geometries[150:]
+geometries = geometries[:150]
 
 real_geometries = list(filter(lambda x: "SYNTHETIC" not in x, geometries))
 synthetic_geometries = list(filter(lambda x: "SYNTHETIC" in x, geometries))
