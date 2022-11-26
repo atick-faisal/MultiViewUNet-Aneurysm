@@ -1,5 +1,6 @@
 import os, gc
 import random
+import numpy as np
 import pandas as pd
 import pyvista as pv
 
@@ -18,8 +19,10 @@ INPUT_DIR = "Input/"
 TARGET_DIR = "Target/"
 ROTATION = 30
 TRAIN_PERCENTAGE = 0.9
-CURVATURE_CLIM = [0, 300]
-TAWSS_CLIM = [0, 5]
+# CURVATURE_CLIM = [0, 300]
+CURVATURE_CLIM = [4, 8] # LOG
+# TAWSS_CLIM = [0, 5]
+TAWSS_CLIM = [-3, 3] # LOG
 ECAP_CLIM = [0, 2]
 
 # --------------------- Train-Test Split  -----------------------------
@@ -67,7 +70,8 @@ for filename in track(geometries, description="Processing ... "):
 
     geometry = pv.read(geometry_path)
     curvature = geometry.curvature(curv_type="mean")
-    geometry.point_data["CURVATURE"] = curvature
+    curvature[curvature < 0.001] = 0.001
+    geometry.point_data["CURVATURE"] = np.log2(curvature)
 
     image_path = None
 
@@ -134,7 +138,7 @@ for filename in track(geometries, description="Processing ... "):
 
     geometry = pv.read(geometry_path)
     result = pd.read_csv(result_path)
-    geometry.point_data["TAWSS"] = result["TAWSS [Pa]"]
+    geometry.point_data["TAWSS"] = np.log2(result["TAWSS [Pa]"])
     # geometry.point_data["ECAP"] = result["ECAP [kg^-1 ms^2]"]
 
     image_path = None
@@ -195,4 +199,4 @@ for filename in track(geometries, description="Processing ... "):
     del geometry, result
     gc.collect()
 
-    # break
+    break
