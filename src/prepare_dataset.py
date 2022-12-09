@@ -19,17 +19,17 @@ INPUT_DIR = "Input/"
 TARGET_DIR = "Target/"
 ROTATION = 30
 TRAIN_PERCENTAGE = 0.9
-# CURVATURE_CLIM = [0, 300]
-CURVATURE_CLIM = [4, 8] # LOG
-# TAWSS_CLIM = [0, 5]
-TAWSS_CLIM = [-3, 3] # LOG
+CURVATURE_CLIM = [0, 300]
+# CURVATURE_CLIM = [4, 8] # LOG
+TAWSS_CLIM = [0, 5]
+# TAWSS_CLIM = [-3, 3] # LOG
 ECAP_CLIM = [0, 2]
 
 # --------------------- Train-Test Split  -----------------------------
 geometries = os.listdir(os.path.join(DATASET_PATH, INPUT_DIR))
 geometries = [filename[:-4] for filename in geometries]
 
-geometries = geometries[150:]
+# geometries = geometries[150:]
 
 real_geometries = list(filter(lambda x: "SYNTHETIC" not in x, geometries))
 synthetic_geometries = list(filter(lambda x: "SYNTHETIC" in x, geometries))
@@ -49,8 +49,10 @@ synthetic_geometries = list(filter(lambda x: "SYNTHETIC" in x, geometries))
 # ... Train Test
 random.shuffle(geometries)
 train_size = int(len(geometries) * TRAIN_PERCENTAGE)
-train_geometries = geometries[:train_size]
-test_geometries = geometries[train_size:]
+# train_geometries = geometries[:train_size]
+# test_geometries = geometries[train_size:]
+train_geometries = synthetic_geometries
+test_geometries = real_geometries
 
 # -------------------- Generate Dataset -------------------------
 for filename in track(geometries, description="Processing ... "):
@@ -70,8 +72,8 @@ for filename in track(geometries, description="Processing ... "):
 
     geometry = pv.read(geometry_path)
     curvature = geometry.curvature(curv_type="mean")
-    curvature[curvature < 0.001] = 0.001
-    geometry.point_data["CURVATURE"] = np.log2(curvature)
+    # curvature[curvature < 0.001] = 0.001
+    geometry.point_data["CURVATURE"] = curvature
 
     image_path = None
 
@@ -103,6 +105,7 @@ for filename in track(geometries, description="Processing ... "):
     # --------------------- Augmentation --------------------------
 
     if filename in train_geometries:
+        continue
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
@@ -122,6 +125,8 @@ for filename in track(geometries, description="Processing ... "):
 
     # --------------------- Original -----------------------
 
+    geometry.rotate_x(90, inplace=True)
+
     generate_rotating_snapshots(
         geometry=geometry,
         rotation_step=ROTATION,
@@ -138,7 +143,7 @@ for filename in track(geometries, description="Processing ... "):
 
     geometry = pv.read(geometry_path)
     result = pd.read_csv(result_path)
-    geometry.point_data["TAWSS"] = np.log2(result["TAWSS [Pa]"])
+    geometry.point_data["TAWSS"] = result["TAWSS [Pa]"]
     # geometry.point_data["ECAP"] = result["ECAP [kg^-1 ms^2]"]
 
     image_path = None
@@ -171,6 +176,7 @@ for filename in track(geometries, description="Processing ... "):
     # --------------------- Augmentation --------------------------
 
     if filename in train_geometries:
+        continue
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
@@ -187,6 +193,8 @@ for filename in track(geometries, description="Processing ... "):
         )
 
     # --------------------- Original -----------------------
+
+    geometry.rotate_x(90, inplace=True)
 
     generate_rotating_snapshots(
         geometry=geometry,
