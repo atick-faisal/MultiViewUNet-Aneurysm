@@ -29,10 +29,10 @@ ECAP_CLIM = [0, 2]
 geometries = os.listdir(os.path.join(DATASET_PATH, INPUT_DIR))
 geometries = [filename[:-4] for filename in geometries]
 
-# geometries = geometries[150:]
+geometries = geometries[150:]
 
-real_geometries = list(filter(lambda x: "SYNTHETIC" not in x, geometries))
-synthetic_geometries = list(filter(lambda x: "SYNTHETIC" in x, geometries))
+# real_geometries = list(filter(lambda x: "SYNTHETIC" not in x, geometries))
+# synthetic_geometries = list(filter(lambda x: "SYNTHETIC" in x, geometries))
 
 # print(f"REAL: {real_geometries}")
 # print(f"SYNTHETIC: {synthetic_geometries}")
@@ -49,10 +49,10 @@ synthetic_geometries = list(filter(lambda x: "SYNTHETIC" in x, geometries))
 # ... Train Test
 random.shuffle(geometries)
 train_size = int(len(geometries) * TRAIN_PERCENTAGE)
-# train_geometries = geometries[:train_size]
-# test_geometries = geometries[train_size:]
-train_geometries = synthetic_geometries
-test_geometries = real_geometries
+train_geometries = geometries[:train_size]
+test_geometries = geometries[train_size:]
+# train_geometries = synthetic_geometries
+# test_geometries = real_geometries
 
 # -------------------- Generate Dataset -------------------------
 for filename in track(geometries, description="Processing ... "):
@@ -105,7 +105,7 @@ for filename in track(geometries, description="Processing ... "):
     # --------------------- Augmentation --------------------------
 
     if filename in train_geometries:
-        continue
+        # continue
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
@@ -176,7 +176,7 @@ for filename in track(geometries, description="Processing ... "):
     # --------------------- Augmentation --------------------------
 
     if filename in train_geometries:
-        continue
+        # continue
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
