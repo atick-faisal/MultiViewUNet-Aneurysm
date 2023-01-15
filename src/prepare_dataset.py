@@ -125,7 +125,7 @@ for filename in track(geometries, description="Processing ... "):
 
     # --------------------- Original -----------------------
 
-    geometry.rotate_x(90, inplace=True)
+    # geometry.rotate_x(90, inplace=True)
 
     generate_rotating_snapshots(
         geometry=geometry,
@@ -194,7 +194,7 @@ for filename in track(geometries, description="Processing ... "):
 
     # --------------------- Original -----------------------
 
-    geometry.rotate_x(90, inplace=True)
+    # geometry.rotate_x(90, inplace=True)
 
     generate_rotating_snapshots(
         geometry=geometry,
