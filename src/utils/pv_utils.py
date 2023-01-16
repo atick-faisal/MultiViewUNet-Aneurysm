@@ -39,7 +39,7 @@ def generate_rotating_snapshots(
     if glossy_rendering:
         pl.add_mesh(
             geometry,
-            cmap=cm.gray,
+            cmap=cm.jet,
             show_scalar_bar=False,
             pbr=True,
             metallic=0.5,
@@ -48,7 +48,7 @@ def generate_rotating_snapshots(
     else:
         pl.add_mesh(
             geometry,
-            cmap=cm.gray,
+            cmap=cm.jet,
             show_scalar_bar=False,
             ambient=0.3,
             smooth_shading=True,

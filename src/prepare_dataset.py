@@ -21,8 +21,8 @@ ROTATION = 30
 TRAIN_PERCENTAGE = 0.9
 CURVATURE_CLIM = [0, 300]
 # CURVATURE_CLIM = [4, 8] # LOG
-TAWSS_CLIM = [0, 5]
-# TAWSS_CLIM = [-3, 3] # LOG
+# TAWSS_CLIM = [0, 5]
+TAWSS_CLIM = [-3, 3] # LOG
 ECAP_CLIM = [0, 2]
 
 # --------------------- Train-Test Split  -----------------------------
@@ -71,9 +71,12 @@ for filename in track(geometries, description="Processing ... "):
     # -------------------------- Input Geometry ----------------------------
 
     geometry = pv.read(geometry_path)
-    curvature = geometry.curvature(curv_type="mean")
+    result = pd.read_csv(result_path)
+    geometry.point_data["TAWSS"] = np.log2(result["TAWSS [Pa]"])
+
+    # curvature = geometry.curvature(curv_type="mean")
     # curvature[curvature < 0.001] = 0.001
-    geometry.point_data["CURVATURE"] = curvature
+    # geometry.point_data["CURVATURE"] = curvature
 
     image_path = None
 
@@ -110,17 +113,17 @@ for filename in track(geometries, description="Processing ... "):
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="x",
-            clim=CURVATURE_CLIM,
+            clim=TAWSS_CLIM,
             save_path=image_path,
-            glossy_rendering=False
+            # glossy_rendering=False
         )
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="y",
-            clim=CURVATURE_CLIM,
+            clim=TAWSS_CLIM,
             save_path=image_path,
-            glossy_rendering=False
+            # glossy_rendering=False
         )
 
     # --------------------- Original -----------------------
@@ -131,20 +134,20 @@ for filename in track(geometries, description="Processing ... "):
         geometry=geometry,
         rotation_step=ROTATION,
         rotation_axis="z",
-        clim=CURVATURE_CLIM,
+        clim=TAWSS_CLIM,
         save_path=image_path,
-        glossy_rendering=False
+        # glossy_rendering=False
     )
 
-    del geometry, curvature
+    del geometry, #curvature
     gc.collect()
 
     # -------------------------- Target Geometry ----------------------------
 
     geometry = pv.read(geometry_path)
     result = pd.read_csv(result_path)
-    geometry.point_data["TAWSS"] = result["TAWSS [Pa]"]
-    # geometry.point_data["ECAP"] = result["ECAP [kg^-1 ms^2]"]
+    # geometry.point_data["TAWSS"] = result["TAWSS [Pa]"]
+    geometry.point_data["ECAP"] = result["ECAP [kg^-1 ms^2]"]
 
     image_path = None
 
@@ -181,14 +184,14 @@ for filename in track(geometries, description="Processing ... "):
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="x",
-            clim=TAWSS_CLIM,
+            clim=ECAP_CLIM,
             save_path=image_path
         )
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="y",
-            clim=TAWSS_CLIM,
+            clim=ECAP_CLIM,
             save_path=image_path
         )
 
@@ -200,7 +203,7 @@ for filename in track(geometries, description="Processing ... "):
         geometry=geometry,
         rotation_step=ROTATION,
         rotation_axis="z",
-        clim=TAWSS_CLIM,
+        clim=ECAP_CLIM,
         save_path=image_path
     )
 
