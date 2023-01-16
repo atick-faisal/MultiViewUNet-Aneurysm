@@ -19,11 +19,13 @@ INPUT_DIR = "Input/"
 TARGET_DIR = "Target/"
 ROTATION = 30
 TRAIN_PERCENTAGE = 0.9
-CURVATURE_CLIM = [0, 300]
+CURVATURE_CLIM = [0, 150]
 # CURVATURE_CLIM = [4, 8] # LOG
-# TAWSS_CLIM = [0, 5]
-TAWSS_CLIM = [-3, 3] # LOG
+# TAWSS_CLIM = [-1, 5]
+TAWSS_CLIM = [-1, 1] # LOG
 ECAP_CLIM = [0, 2]
+RRT_CLIM = [0, 10]
+OSI_CLIM = [0, 0.5]
 
 # --------------------- Train-Test Split  -----------------------------
 geometries = os.listdir(os.path.join(DATASET_PATH, INPUT_DIR))
@@ -72,9 +74,9 @@ for filename in track(geometries, description="Processing ... "):
 
     geometry = pv.read(geometry_path)
     result = pd.read_csv(result_path)
-    geometry.point_data["TAWSS"] = np.log2(result["TAWSS [Pa]"])
+    geometry.point_data["TAWSS"] = np.log(result["TAWSS [Pa]"])
 
-    # curvature = geometry.curvature(curv_type="mean")
+    # curvature = geometry.curvature()
     # curvature[curvature < 0.001] = 0.001
     # geometry.point_data["CURVATURE"] = curvature
 
@@ -147,7 +149,8 @@ for filename in track(geometries, description="Processing ... "):
     geometry = pv.read(geometry_path)
     result = pd.read_csv(result_path)
     # geometry.point_data["TAWSS"] = result["TAWSS [Pa]"]
-    geometry.point_data["ECAP"] = result["ECAP [kg^-1 ms^2]"]
+    # geometry.point_data["ECAP"] = result["ECAP [kg^-1 ms^2]"]
+    geometry.point_data["OSI"] = result["OSI"]
 
     image_path = None
 
@@ -184,14 +187,14 @@ for filename in track(geometries, description="Processing ... "):
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="x",
-            clim=ECAP_CLIM,
+            clim=OSI_CLIM,
             save_path=image_path
         )
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="y",
-            clim=ECAP_CLIM,
+            clim=OSI_CLIM,
             save_path=image_path
         )
 
@@ -203,7 +206,7 @@ for filename in track(geometries, description="Processing ... "):
         geometry=geometry,
         rotation_step=ROTATION,
         rotation_axis="z",
-        clim=ECAP_CLIM,
+        clim=OSI_CLIM,
         save_path=image_path
     )
 
