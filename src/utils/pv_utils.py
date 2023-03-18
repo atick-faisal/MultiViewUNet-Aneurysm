@@ -39,16 +39,16 @@ def generate_rotating_snapshots(
     if glossy_rendering:
         pl.add_mesh(
             geometry,
-            cmap=cm.jet,
+            # cmap=cm.jet,
             show_scalar_bar=False,
-            pbr=True,
-            metallic=0.5,
-            roughness=0.5
+            # pbr=True,
+            # metallic=0.5,
+            # roughness=0.5
         )
     else:
         pl.add_mesh(
             geometry,
-            cmap=cm.jet,
+            cmap=CFD_CMAP,
             show_scalar_bar=False,
             ambient=0.3,
             smooth_shading=True,

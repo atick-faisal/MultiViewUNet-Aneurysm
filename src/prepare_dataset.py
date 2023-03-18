@@ -1,4 +1,4 @@
-import os, gc
+import os, gc, sys
 import random
 import numpy as np
 import pandas as pd
@@ -18,7 +18,7 @@ IMAGE_DIR = "Images/"
 INPUT_DIR = "Input/"
 TARGET_DIR = "Target/"
 ROTATION = 30
-TRAIN_PERCENTAGE = 0.9
+TRAIN_PERCENTAGE = 0.8
 CURVATURE_CLIM = [0, 150]
 # CURVATURE_CLIM = [4, 8] # LOG
 # TAWSS_CLIM = [-1, 5]
@@ -31,13 +31,14 @@ OSI_CLIM = [0, 0.5]
 geometries = os.listdir(os.path.join(DATASET_PATH, INPUT_DIR))
 geometries = [filename[:-4] for filename in geometries]
 
-geometries = geometries[150:]
+real_geometries = list(filter(lambda x: "SYNTHETIC" not in x, geometries))
+synthetic_geometries = list(filter(lambda x: "SYNTHETIC" in x, geometries))
 
-# real_geometries = list(filter(lambda x: "SYNTHETIC" not in x, geometries))
-# synthetic_geometries = list(filter(lambda x: "SYNTHETIC" in x, geometries))
+print(f"REAL: {real_geometries}")
+print(f"SYNTHETIC: {synthetic_geometries}")
 
-# print(f"REAL: {real_geometries}")
-# print(f"SYNTHETIC: {synthetic_geometries}")
+geometries = real_geometries
+geometries = geometries
 
 # sys.exit(0)
 
@@ -53,6 +54,7 @@ random.shuffle(geometries)
 train_size = int(len(geometries) * TRAIN_PERCENTAGE)
 train_geometries = geometries[:train_size]
 test_geometries = geometries[train_size:]
+
 # train_geometries = synthetic_geometries
 # test_geometries = real_geometries
 
@@ -74,7 +76,7 @@ for filename in track(geometries, description="Processing ... "):
 
     geometry = pv.read(geometry_path)
     result = pd.read_csv(result_path)
-    geometry.point_data["TAWSS"] = np.log(result["TAWSS [Pa]"])
+    # geometry.point_data["TAWSS"] = np.log(result["TAWSS [Pa]"])
 
     # curvature = geometry.curvature()
     # curvature[curvature < 0.001] = 0.001
@@ -117,7 +119,7 @@ for filename in track(geometries, description="Processing ... "):
             rotation_axis="x",
             clim=TAWSS_CLIM,
             save_path=image_path,
-            # glossy_rendering=False
+            glossy_rendering=True
         )
         generate_rotating_snapshots(
             geometry=geometry,
@@ -125,12 +127,12 @@ for filename in track(geometries, description="Processing ... "):
             rotation_axis="y",
             clim=TAWSS_CLIM,
             save_path=image_path,
-            # glossy_rendering=False
+            glossy_rendering=True
         )
 
     # --------------------- Original -----------------------
 
-    # geometry.rotate_x(90, inplace=True)
+    geometry.rotate_x(90, inplace=True)
 
     generate_rotating_snapshots(
         geometry=geometry,
@@ -138,7 +140,7 @@ for filename in track(geometries, description="Processing ... "):
         rotation_axis="z",
         clim=TAWSS_CLIM,
         save_path=image_path,
-        # glossy_rendering=False
+        glossy_rendering=True
     )
 
     del geometry, #curvature
@@ -149,8 +151,8 @@ for filename in track(geometries, description="Processing ... "):
     geometry = pv.read(geometry_path)
     result = pd.read_csv(result_path)
     # geometry.point_data["TAWSS"] = result["TAWSS [Pa]"]
-    # geometry.point_data["ECAP"] = result["ECAP [kg^-1 ms^2]"]
-    geometry.point_data["OSI"] = result["OSI"]
+    geometry.point_data["ECAP"] = result["ECAP [kg^-1 ms^2]"]
+    # geometry.point_data["OSI"] = result["OSI"]
 
     image_path = None
 
@@ -187,26 +189,26 @@ for filename in track(geometries, description="Processing ... "):
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="x",
-            clim=OSI_CLIM,
+            clim=ECAP_CLIM,
             save_path=image_path
         )
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION,
             rotation_axis="y",
-            clim=OSI_CLIM,
+            clim=ECAP_CLIM,
             save_path=image_path
         )
 
     # --------------------- Original -----------------------
 
-    # geometry.rotate_x(90, inplace=True)
+    geometry.rotate_x(90, inplace=True)
 
     generate_rotating_snapshots(
         geometry=geometry,
         rotation_step=ROTATION,
         rotation_axis="z",
-        clim=OSI_CLIM,
+        clim=ECAP_CLIM,
         save_path=image_path
     )
 
