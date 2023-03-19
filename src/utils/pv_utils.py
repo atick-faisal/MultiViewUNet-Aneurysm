@@ -34,7 +34,7 @@ def generate_rotating_snapshots(
 ):
     pl = pv.Plotter(off_screen=True)
     pl.enable_anti_aliasing()
-    pl.set_background("white")
+    pl.set_background("black")
 
     if glossy_rendering:
         pl.add_mesh(

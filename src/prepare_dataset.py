@@ -37,8 +37,8 @@ synthetic_geometries = list(filter(lambda x: "SYNTHETIC" in x, geometries))
 print(f"REAL: {real_geometries}")
 print(f"SYNTHETIC: {synthetic_geometries}")
 
-geometries = real_geometries
-geometries = geometries
+geometries = synthetic_geometries
+geometries = geometries[150:]
 
 # sys.exit(0)
 
@@ -132,7 +132,7 @@ for filename in track(geometries, description="Processing ... "):
 
     # --------------------- Original -----------------------
 
-    geometry.rotate_x(90, inplace=True)
+    # geometry.rotate_x(90, inplace=True)
 
     generate_rotating_snapshots(
         geometry=geometry,
@@ -202,7 +202,7 @@ for filename in track(geometries, description="Processing ... "):
 
     # --------------------- Original -----------------------
 
-    geometry.rotate_x(90, inplace=True)
+    # geometry.rotate_x(90, inplace=True)
 
     generate_rotating_snapshots(
         geometry=geometry,
