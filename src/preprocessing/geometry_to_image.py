@@ -9,7 +9,7 @@ from typing import List, Tuple, Literal
 
 from pv_utils import *
 
-random.seed(121)
+random.seed(42)
 
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
@@ -37,7 +37,7 @@ ECAP_DIR = "ECAP/"
 OSI_DIR = "OSI/"
 RRT_DIR = "RRT/"
 
-TRAIN_PERCENTAGE = 0.8
+TRAIN_PERCENTAGE = 0.9
 ROTATION_STEP = 30
 
 
@@ -59,6 +59,12 @@ def get_train_test_geometries(
     all_geometries = os.listdir(geometry_files_dir)
     all_geometries = [filename[:-4] for filename in all_geometries]
 
+    random.shuffle(all_geometries)
+    train_size = int(len(all_geometries) * train_percentage)
+    train_geometries, test_geometries = \
+        all_geometries[:train_size], all_geometries[train_size:]
+
+    """ --- Stratified ---
     real_geometries = list(
         filter(lambda x: "SYNTHETIC" not in x, all_geometries))
     synthetic_geometries = list(
@@ -74,6 +80,7 @@ def get_train_test_geometries(
 
     test_geometries = real_geometries[train_size_real:] + \
         synthetic_geometries[train_size_synthetic:]
+    """
 
     return (train_geometries, test_geometries)
 
@@ -101,7 +108,8 @@ def get_clim(transformation) -> List[float]:
         return [0.0, 10]
     else:
         return [0.0, 0.0]
-    
+
+
 def get_ambient(transformation: str) -> float:
     """
     This function returns the ambient lighting based on the transformation type.
@@ -193,6 +201,7 @@ def generate_images_from_geometries(
         )
 
         yield
+
 
 def clean_dir(path: str):
     try:
