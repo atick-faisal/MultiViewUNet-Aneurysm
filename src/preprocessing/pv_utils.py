@@ -10,6 +10,7 @@ def generate_rotating_snapshots(
     rotation_step: int,
     rotation_axis: Literal["x", "y", "z"],
     clim: List[float],
+    ambient: float,
     save_path: str
 ):
     """
@@ -25,6 +26,8 @@ def generate_rotating_snapshots(
         The axis of rotation.
     clim : list of float
         The color range limits.
+    ambient : float
+        The ambient lighting amount
     save_path : str
         The path to save the images.
 
@@ -33,7 +36,7 @@ def generate_rotating_snapshots(
     None
 
     """
-    
+
     pl = pv.Plotter(off_screen=True)
     pl.enable_anti_aliasing()
     pl.set_background("white")
@@ -43,7 +46,7 @@ def generate_rotating_snapshots(
         cmap=cm.jet,
         show_scalar_bar=False,
         clim=clim,
-        ambient=0.1,
+        ambient=ambient,
         smooth_shading=True
     )
 

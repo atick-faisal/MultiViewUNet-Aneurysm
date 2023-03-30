@@ -1,4 +1,5 @@
 import os
+import shutil
 import random
 import numpy as np
 import pandas as pd
@@ -8,7 +9,7 @@ from typing import List, Tuple, Literal
 
 from pv_utils import *
 
-random.seed(42)
+random.seed(121)
 
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
@@ -100,6 +101,22 @@ def get_clim(transformation) -> List[float]:
         return [0.0, 10]
     else:
         return [0.0, 0.0]
+    
+def get_ambient(transformation: str) -> float:
+    """
+    This function returns the ambient lighting based on the transformation type.
+
+    Args:
+        transformation (str): The type of transformation.
+
+    Returns:
+        float: The ambient lighting.
+    """
+
+    if transformation == "Raw":
+        return 0.1
+    else:
+        return 0.3
 
 
 def generate_images_from_geometries(
@@ -154,6 +171,7 @@ def generate_images_from_geometries(
                 rotation_step=ROTATION_STEP,
                 rotation_axis="x",
                 clim=get_clim(transformation),
+                ambient=get_ambient(transformation),
                 save_path=save_path
             )
             generate_rotating_snapshots(
@@ -161,6 +179,7 @@ def generate_images_from_geometries(
                 rotation_step=ROTATION_STEP,
                 rotation_axis="y",
                 clim=get_clim(transformation),
+                ambient=get_ambient(transformation),
                 save_path=save_path
             )
 
@@ -169,10 +188,18 @@ def generate_images_from_geometries(
             rotation_step=ROTATION_STEP,
             rotation_axis="z",
             clim=get_clim(transformation),
+            ambient=get_ambient(transformation),
             save_path=save_path
         )
 
         yield
+
+def clean_dir(path: str):
+    try:
+        shutil.rmtree(path=path)
+        os.mkdir(path)
+    except OSError:
+        pass
 
 
 if __name__ == "__main__":
@@ -182,6 +209,9 @@ if __name__ == "__main__":
     )
 
     for transformation in GEOMETRY_TRANSFORMATIONS:
+        clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TRAIN_DIR, transformation))
+        clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TEST_DIR, transformation))
+
         train_generator = generate_images_from_geometries(
             geometries=train_geometries,
             mode="train",
