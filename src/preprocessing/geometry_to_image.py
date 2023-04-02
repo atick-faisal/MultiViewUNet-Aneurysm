@@ -58,7 +58,7 @@ def get_train_test_geometries(
 
     all_geometries = os.listdir(geometry_files_dir)
     all_geometries = [filename[:-4] for filename in all_geometries]
-    all_geometries = all_geometries[:150]
+    all_geometries = all_geometries[150:]
 
     random.shuffle(all_geometries)
     train_size = int(len(all_geometries) * train_percentage)
@@ -100,7 +100,7 @@ def get_clim(transformation) -> List[float]:
     if transformation == "Curvature":
         return [0.0, 150.0]
     elif transformation == "TAWSS":
-        return [-1.0, 1.0]
+        return [-3.0, 3.0]
     elif transformation == "ECAP":
         return [0.0, 2.0]
     elif transformation == "OSI":
@@ -158,7 +158,7 @@ def generate_images_from_geometries(
             curvature[curvature < 0.001] = 0.001
             geometry.point_data[transformation] = curvature
         elif transformation == "TAWSS":
-            geometry.point_data[transformation] = np.log(cfd_results.filter(
+            geometry.point_data[transformation] = np.log2(cfd_results.filter(
                 regex=f".*{transformation}.*"))
         else:
             geometry.point_data[transformation] = cfd_results.filter(

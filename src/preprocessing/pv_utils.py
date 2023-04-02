@@ -47,7 +47,8 @@ def generate_rotating_snapshots(
         show_scalar_bar=False,
         clim=clim,
         ambient=ambient,
-        smooth_shading=True
+        smooth_shading=True,
+        lighting=True
     )
 
     for i in range(360 // rotation_step):
