@@ -58,7 +58,7 @@ def get_train_test_geometries(
 
     all_geometries = os.listdir(geometry_files_dir)
     all_geometries = [filename[:-4] for filename in all_geometries]
-    all_geometries = all_geometries[150:]
+    all_geometries = all_geometries[:150]
 
     random.shuffle(all_geometries)
     train_size = int(len(all_geometries) * train_percentage)
@@ -219,8 +219,8 @@ if __name__ == "__main__":
     )
 
     for transformation in GEOMETRY_TRANSFORMATIONS:
-        clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TRAIN_DIR, transformation))
-        clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TEST_DIR, transformation))
+        # clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TRAIN_DIR, transformation))
+        # clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TEST_DIR, transformation))
 
         train_generator = generate_images_from_geometries(
             geometries=train_geometries,
