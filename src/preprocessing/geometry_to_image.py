@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import pyvista as pv
 from tqdm import tqdm
-from typing import List, Tuple, Literal
+from typing import List, Tuple, Literal, Generator
 
 from pv_utils import *
 
@@ -132,7 +132,7 @@ def generate_images_from_geometries(
     geometries: List[str],
     mode: Literal["train", "test"],
     transformation: str
-):
+) -> Generator[None, None, None]:
     """
     This function generates images from geometries.
 
