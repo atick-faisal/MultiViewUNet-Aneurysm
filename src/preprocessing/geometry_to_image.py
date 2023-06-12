@@ -58,7 +58,7 @@ def get_train_test_geometries(
 
     all_geometries = os.listdir(geometry_files_dir)
     all_geometries = [filename[:-4] for filename in all_geometries]
-    all_geometries = all_geometries[150:]
+    # all_geometries = all_geometries[150:]
 
     random.shuffle(all_geometries)
     train_size = int(len(all_geometries) * train_percentage)
@@ -98,7 +98,7 @@ def get_clim(transformation) -> List[float]:
     """
 
     if transformation == "Curvature":
-        return [0.0, 150.0]
+        return [-30, 100.0]
     elif transformation == "TAWSS":
         return [-3.0, 3.0]
     elif transformation == "ECAP":
@@ -154,9 +154,9 @@ def generate_images_from_geometries(
         if transformation == "Raw":
             pass
         elif transformation == "Curvature":
-            curvature = geometry.curvature()
+            curvature = geometry.curvature(curv_type="gaussian")
             curvature[curvature < 0.001] = 0.001
-            geometry.point_data[transformation] = curvature
+            geometry.point_data[transformation] = np.log2(curvature)
         elif transformation == "TAWSS":
             geometry.point_data[transformation] = np.log2(cfd_results.filter(
                 regex=f".*{transformation}.*"))
@@ -219,8 +219,8 @@ if __name__ == "__main__":
     )
 
     for transformation in GEOMETRY_TRANSFORMATIONS:
-        # clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TRAIN_DIR, transformation))
-        # clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TEST_DIR, transformation))
+        clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TRAIN_DIR, transformation))
+        clean_dir(os.path.join(DATA_DIR, IMAGES_DIR, TEST_DIR, transformation))
 
         train_generator = generate_images_from_geometries(
             geometries=train_geometries,
