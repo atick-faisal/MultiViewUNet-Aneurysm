@@ -194,6 +194,10 @@ def generate_images_from_geometries(
             )
         '''
 
+        if "SYNTHETIC" not in filename:
+            print("Found Real Geometry")
+            geometry.rotate_x(90, inplace=True)
+
         generate_rotating_snapshots(
             geometry=geometry,
             rotation_step=ROTATION_STEP,
@@ -209,9 +213,9 @@ def generate_images_from_geometries(
 def clean_dir(path: str):
     try:
         shutil.rmtree(path=path)
-        os.mkdir(path)
     except OSError:
         pass
+    os.makedirs(path)
 
 
 if __name__ == "__main__":
