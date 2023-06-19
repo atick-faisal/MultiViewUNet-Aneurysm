@@ -9,7 +9,7 @@ from typing import List, Tuple, Literal, Generator
 
 from pv_utils import *
 
-random.seed(42)
+random.seed(1)
 
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
@@ -37,7 +37,7 @@ ECAP_DIR = "ECAP/"
 OSI_DIR = "OSI/"
 RRT_DIR = "RRT/"
 
-TRAIN_PERCENTAGE = 0.9
+TRAIN_PERCENTAGE = 0.8
 ROTATION_STEP = 30
 
 
@@ -174,6 +174,7 @@ def generate_images_from_geometries(
                 DATA_DIR, IMAGES_DIR, TEST_DIR, transformation, filename
             )
 
+        '''
         if mode == "train":
             generate_rotating_snapshots(
                 geometry=geometry,
@@ -191,6 +192,7 @@ def generate_images_from_geometries(
                 ambient=get_ambient(transformation),
                 save_path=save_path
             )
+        '''
 
         generate_rotating_snapshots(
             geometry=geometry,
