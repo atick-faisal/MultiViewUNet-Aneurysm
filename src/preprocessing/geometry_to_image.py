@@ -195,7 +195,6 @@ def generate_images_from_geometries(
         '''
 
         if "SYNTHETIC" not in filename:
-            print("Found Real Geometry")
             geometry.rotate_x(90, inplace=True)
 
         generate_rotating_snapshots(
