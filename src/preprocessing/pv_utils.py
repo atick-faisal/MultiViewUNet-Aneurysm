@@ -43,7 +43,7 @@ def generate_rotating_snapshots(
 
     pl.add_mesh(
         mesh=geometry,
-        cmap=cm.binary,
+        cmap=cm.jet,
         show_scalar_bar=False,
         clim=clim,
         ambient=ambient,
@@ -64,7 +64,7 @@ def generate_rotating_snapshots(
         pl.show(auto_close=False)
         image = Image.fromarray(pl.image[:, 128:-128, :])
         # ... Grayscale Convertion
-        image = image.convert("L")
+        # image = image.convert("L")
         image.save(save_path + "_{:s}_{:03d}.png".format(rotation_axis, i))
 
     pl.close()

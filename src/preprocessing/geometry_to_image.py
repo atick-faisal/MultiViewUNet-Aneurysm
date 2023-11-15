@@ -9,7 +9,7 @@ from typing import List, Tuple, Literal, Generator
 
 from pv_utils import *
 
-random.seed(1)
+random.seed(7)
 
 current_file = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file)
@@ -174,7 +174,6 @@ def generate_images_from_geometries(
                 DATA_DIR, IMAGES_DIR, TEST_DIR, transformation, filename
             )
 
-        '''
         if mode == "train":
             generate_rotating_snapshots(
                 geometry=geometry,
@@ -192,7 +191,6 @@ def generate_images_from_geometries(
                 ambient=get_ambient(transformation),
                 save_path=save_path
             )
-        '''
 
         if "SYNTHETIC" not in filename:
             geometry.rotate_x(90, inplace=True)
